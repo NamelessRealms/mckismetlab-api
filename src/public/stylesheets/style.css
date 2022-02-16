@@ -1,0 +1,18 @@
+@font-face {
+  font-family: "GoldmanSans_Md";
+  src: url("../ttf/GoldmanSans_Md.ttf");
+}
+
+body {
+  background: rgb(32, 33, 36);
+}
+
+div {
+  text-align: center;
+}
+
+div h1 {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 4vw;
+  font-family: "GoldmanSans_Md";
+}
