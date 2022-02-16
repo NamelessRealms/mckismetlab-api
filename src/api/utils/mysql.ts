@@ -13,7 +13,7 @@ export default class Mysql {
             database: process.env.MYSQL_DATABASE,
             connectionLimit: 10
         });
-        Logs.info(`Success connect Database: ${process.env.MYSQL_DATABASE}`);
+        // Logs.info(`Success connect Database: ${process.env.MYSQL_DATABASE}`);
     }
 
     public static getPool(): Pool {

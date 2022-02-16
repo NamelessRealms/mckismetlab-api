@@ -15,15 +15,14 @@ export default class AuthService {
      * @return {*}  {Promise<string>}
      * @memberof AuthService
      */
-    public verify(verifyData: any): Promise<{ tokenCode: string, username: string, role: string[] }> {
-        return new Promise(async (resolve, reject) => {
+    public async verify(verifyData: any): Promise<{ tokenCode: string, username: string, role: string[] }> {
 
-            // 驗證 OAuth 2.0 授權類型
+        // 驗證 OAuth 2.0 授權類型
             if (!verifyData.grant_type || verifyData.grant_type !== "password") {
-                return reject({
+                throw {
                     error: "unsupported_response_type",
                     error_description: "授權伺服器不支援要求中的回應類型，本伺服器僅支持 Password 類型。"
-                });
+                };
             }
 
             // 將明文密碼加密
@@ -33,10 +32,10 @@ export default class AuthService {
             const results = await Mysql.getPool().query("SELECT * FROM users WHERE username = ? AND password = ?", [verifyData.username, passwordCrypto]);
 
             if (!(results[0] as Array<IUser>).length) {
-                return reject({
+                throw {
                     error: "invalid_client",
                     error_description: "用戶端驗證失敗。"
-                });
+                };
             }
 
             // 產生 OAuth 2.0 和 JWT 的 JSON 格式令牌訊息
@@ -52,11 +51,10 @@ export default class AuthService {
                 expiresIn: `${environment.jwt.increaseTime}ms`
             });
 
-            return resolve({
+            return {
                 tokenCode: token,
                 username: (results[0] as Array<IUser>)[0].username,
                 role: (results[0] as Array<IUser>)[0].roles
-            });
-        });
+            };
     }
 }

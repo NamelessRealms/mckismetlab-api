@@ -65,32 +65,32 @@ export default class LauncherController {
         }
     }
 
-    public async createIssuelogFile(request: Request, response: Response): Promise<void> {
-        try {
+    // public async createIssuelogFile(request: Request, response: Response): Promise<void> {
+    //     try {
 
-            const bodyData = request.body;
+    //         const bodyData = request.body;
 
-            // 確保客戶端必要的參數
-            if (!VerifyRequestParameter.verify(bodyData, ["type", "fileName", "issueId", "content"], false)) {
-                return ReplyError.replyParameterError(response);
-            }
+    //         // 確保客戶端必要的參數
+    //         if (!VerifyRequestParameter.verify(bodyData, ["type", "fileName", "issueId", "content"], false)) {
+    //             return ReplyError.replyParameterError(response);
+    //         }
 
-            const createIssuelogFile = await this._launcherService.createIssuelogFile(bodyData);
+    //         const createIssuelogFile = await this._launcherService.createIssuelogFile(bodyData);
 
-            if (createIssuelogFile.modified) {
-                response.status(201).json({
-                    message: "success",
-                    info: bodyData
-                });
-            } else {
-                response.status(304).send();
-            }
+    //         if (createIssuelogFile.modified) {
+    //             response.status(201).json({
+    //                 message: "success",
+    //                 info: bodyData
+    //             });
+    //         } else {
+    //             response.status(304).send();
+    //         }
 
-        } catch (error: any) {
-            Logs.error(error);
-            ReplyError.replyServerError(response);
-        }
-    }
+    //     } catch (error: any) {
+    //         Logs.error(error);
+    //         ReplyError.replyServerError(response);
+    //     }
+    // }
 
     public async getAutoUpdaterLatest(request: Request, response: Response): Promise<void> {
         try {
@@ -110,6 +110,12 @@ export default class LauncherController {
             response.status(200).end();
 
         } catch(error: any) {
+
+            if(error.error === "get-api-statusCode-not-200" || error.error === "github-api-offline") {
+                response.status(400).send(error);
+                return;
+            }
+
             Logs.error(error);
             ReplyError.replyServerError(response);
         }
