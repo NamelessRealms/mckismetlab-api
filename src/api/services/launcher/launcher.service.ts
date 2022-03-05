@@ -13,6 +13,11 @@ export default class LauncherService {
         return (launcherAssetsData[0] as Array<any>)[0];
     }
 
+    public async getLauncherAssetsV2(): Promise<any> {
+        const launcherAssetsData = await Mysql.getPool().query("SELECT * FROM launcher_assets_v2");
+        return (launcherAssetsData[0] as Array<any>)[0];
+    }
+
     public async getLauncherPage(): Promise<any> {
         const launcherPageData = await Mysql.getPool().query("SELECT * FROM launcher_page");
         return (launcherPageData[0] as Array<any>)[0];

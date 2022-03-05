@@ -16,6 +16,13 @@ export default class LauncherController {
         response.status(200).json(launcherAssetsData);
     }
 
+    public async getLauncherAssetsV2(request: Request, response: Response): Promise<void> {
+
+        const launcherAssetsV2Data = await this._launcherService.getLauncherAssetsV2();
+
+        response.status(200).json(launcherAssetsV2Data);
+    }
+
     public async getLauncherPage(request: Request, response: Response): Promise<void> {
 
         const launcherPageData = await this._launcherService.getLauncherPage();

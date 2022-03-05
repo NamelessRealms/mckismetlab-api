@@ -13,7 +13,9 @@ import UserRouter from "./api/routes/user.routes";
 import SponsorRouter from "./api/routes/sponsor.routes";
 import ViolationRouter from "./api/routes/violation.routes";
 import LauncherRouter from "./api/routes/launcher.routes";
+import ModsRoutes from "./api/routes/mods.routes";
 import InteractionsRouter from "./api/routes/interactions.routes";
+import LauncherV2Router from "./api/routes/launcherV2.routes";
 
 import Mysql from "./api/utils/mysql";
 import Logs from "./api/utils/logs";
@@ -80,6 +82,8 @@ export default class App {
         new SponsorRouter(this._app);
         new ViolationRouter(this._app);
         new LauncherRouter(this._app);
+        new ModsRoutes(this._app);
+        new LauncherV2Router(this._app);
         // new InteractionsRouter(this._app);
 
         // old
