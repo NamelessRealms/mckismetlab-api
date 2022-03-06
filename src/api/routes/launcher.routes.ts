@@ -23,7 +23,7 @@ export default class LauncherRouter extends IRoutes {
         // this._routers.route("/logFile")
         //     .post((req, res) => this._launcherController.createIssuelogFile(req, res));
 
-        this._routers.route("/autoUpdater/updates/osx/latest")
+        this._routers.route("/autoUpdater/updates")
             .get((req, res) => this._launcherController.getAutoUpdaterLatest(req, res));
     }
 }

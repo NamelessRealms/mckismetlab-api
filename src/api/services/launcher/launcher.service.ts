@@ -42,7 +42,7 @@ export default class LauncherService {
     public async getGithubReleasesLatest(): Promise<any> {
         try {
 
-            const response = await got.get<any>(`${this._githubApiUrl}/repos/QuasiMkl/mckismetlab-launcher/releases/latest`, {
+            const response = await got.get<any>(`${this._githubApiUrl}/repos/mcKismetLab/mckismetlab-launcher/releases/latest`, {
                 responseType: "json"
             });
     

@@ -2,8 +2,11 @@ import { Request, Response } from "express";
 
 import LauncherService from "../services/launcher/launcher.service";
 import Logs from "../utils/logs";
+import Utils from "../utils/utils";
 import ReplyError from "../utils/response/replyError";
 import VerifyRequestParameter from "../utils/verify/verifyRequestParameter";
+
+import * as path from "path";
 
 export default class LauncherController {
 
@@ -102,23 +105,30 @@ export default class LauncherController {
     public async getAutoUpdaterLatest(request: Request, response: Response): Promise<void> {
         try {
 
-            const clientVersion = request.query.version;
+            const clientVersion = request.query.version as string;
             const githubReleasesLatest = await this._launcherService.getGithubReleasesLatest();
             const releasesLatestVersion = (githubReleasesLatest.tag_name as string).replace("v", "");
 
-            if(clientVersion === releasesLatestVersion) {
+            if (clientVersion === releasesLatestVersion) {
                 response.status(204).end();
-            } else {
-                response.json({
-                    url: "https://github.com/QuasiMkl/mckismetlab-launcher/releases/download/v0.3.0-beta/mckismetlab-launcher-Setup-0.3.0-beta.exe"
-                });
+                return;
             }
 
-            response.status(200).end();
+            if (Utils.isVersion(releasesLatestVersion.split("-")[0], clientVersion.split("-")[0])) {
+                response.status(204).end();
+                return;
+            }
 
-        } catch(error: any) {
+            const exeData = await githubReleasesLatest.assets.find((item: any) => path.extname(item.name) === ".exe");
+            if (exeData === undefined) throw new Error("Find 'githubReleasesLatest' not null.");
 
-            if(error.error === "get-api-statusCode-not-200" || error.error === "github-api-offline") {
+            response.json({
+                url: exeData.browser_download_url
+            });
+
+        } catch (error: any) {
+
+            if (error.error === "get-api-statusCode-not-200" || error.error === "github-api-offline") {
                 response.status(400).send(error);
                 return;
             }
