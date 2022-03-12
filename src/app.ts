@@ -3,6 +3,9 @@ import * as path from "path";
 import * as morgan from "morgan";
 import * as helmet from "helmet";
 import * as cookieParser from "cookie-parser";
+import * as fs from "fs-extra";
+import * as http from "http";
+import * as https from "https";
 // import * as session from "express-session";
 
 // route
@@ -43,7 +46,26 @@ export default class App {
     //     })
     // }
 
+    // private _credentials: { key: string, cert: string } | null = null;
+
+    private _privateKey: string | null = null;
+    private _certificate: string | null = null;
+
     constructor() {
+
+        if (process.env.MYSQL_HOST === undefined) throw new Error("Env MYSQL_HOST not null.");
+        if (process.env.MYSQL_USER === undefined) throw new Error("Env MYSQL_USER not null.");
+        if (process.env.MYSQL_PASSWORD === undefined) throw new Error("Env MYSQL_PASSWORD not null.");
+        if (process.env.MYSQL_DATABASE === undefined) throw new Error("Env MYSQL_DATABASE not null.");
+        if (process.env.JWT_SALT === undefined) throw new Error("Env JWT_SALT not null.");
+        if (process.env.JWT_SECRET === undefined) throw new Error("Env JWT_SECRET not null.");
+
+        if (process.env.SSL_KEY_PATH !== undefined && process.env.SSL_CSR_PATH !== undefined) {
+            this._privateKey = fs.readFileSync(process.env.SSL_KEY_PATH, "utf8");
+            this._certificate = fs.readFileSync(process.env.SSL_CSR_PATH, "utf8");
+            // this._credentials = { key: privateKey, cert: certificate };
+        }
+
         this._app = express();
         this._init();
         this._settings();
@@ -91,9 +113,29 @@ export default class App {
     }
 
     public listen(port: number): void {
+
         this._app.set("port", port || 3000);
-        this._app.listen(port, () => {
-            Logs.info("Api Service listening on PORT " + this._app.get("port"));
-        });
+
+        // this._app.listen(port, () => {
+        //     Logs.info("Api Service listening on PORT " + this._app.get("port"));
+        // });
+
+        if (this._privateKey !== null && this._certificate !== null) {
+
+            const httpsServer = https.createServer({ key: this._privateKey, cert: this._certificate }, this._app);
+
+            httpsServer.listen(port, () => {
+                Logs.info("Https Api Service listening on PORT " + this._app.get("port"));
+            });
+
+        } else {
+
+            const httpServer = http.createServer(this._app);
+
+            httpServer.listen(port, () => {
+                Logs.info("Http Api Service listening on PORT " + this._app.get("port"));
+            });
+
+        }
     }
 }
