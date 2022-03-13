@@ -10,7 +10,7 @@
     "build": "yarn outputVersion && yarn buildDir && yarn buildTsc",
     "buildDir": "node build.js",
     "outputVersion": "node -p \"'export const API_VERSION = ' + JSON.stringify(require('./package.json').version) + ';'\" > src/version.ts",
-    "buildDocker": "docker buildx build --platform linux/amd64,linux/arm64 --output type=image,registry.insecure=true,push=true -t 220.134.105.30:56125/mckismetlab-api-server ."
+    "buildDocker": "docker buildx build --platform linux/amd64 --output type=image,registry.insecure=true,push=true -t 220.134.105.30:56125/mckismetlab-api-server ."
   },
   "author": "Quasi",
   "license": "GPL-3.0 License",
