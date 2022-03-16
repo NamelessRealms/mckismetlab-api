@@ -105,26 +105,33 @@ export default class LauncherController {
     public async getAutoUpdaterLatest(request: Request, response: Response): Promise<void> {
         try {
 
-            const clientVersion = request.query.version as string;
+            // windows
+            // TODO: not osx
             const githubReleasesLatest = await this._launcherService.getGithubReleasesLatest();
-            const releasesLatestVersion = (githubReleasesLatest.tag_name as string).replace("v", "");
 
-            if (clientVersion === releasesLatestVersion) {
-                response.status(204).end();
-                return;
-            }
+            const releaseData = await githubReleasesLatest.assets.find((item: any) => item.name === "RELEASES");
+            response.redirect(releaseData.browser_download_url);
 
-            if (Utils.isVersion(releasesLatestVersion.split("-")[0], clientVersion.split("-")[0])) {
-                response.status(204).end();
-                return;
-            }
+            // const clientVersion = request.query.version as string;
+            // const githubReleasesLatest = await this._launcherService.getGithubReleasesLatest();
+            // const releasesLatestVersion = (githubReleasesLatest.tag_name as string).replace("v", "");
 
-            const exeData = await githubReleasesLatest.assets.find((item: any) => path.extname(item.name) === ".exe");
-            if (exeData === undefined) throw new Error("Find 'githubReleasesLatest' not null.");
+            // if (clientVersion === releasesLatestVersion) {
+            //     response.status(204).end();
+            //     return;
+            // }
 
-            response.json({
-                url: exeData.browser_download_url
-            });
+            // if (Utils.isVersion(releasesLatestVersion.split("-")[0], clientVersion.split("-")[0])) {
+            //     response.status(204).end();
+            //     return;
+            // }
+
+            // const exeData = await githubReleasesLatest.assets.find((item: any) => path.extname(item.name) === ".exe");
+            // if (exeData === undefined) throw new Error("Find 'githubReleasesLatest' not null.");
+
+            // response.json({
+            //     url: exeData.browser_download_url
+            // });
 
         } catch (error: any) {
 
@@ -133,6 +140,21 @@ export default class LauncherController {
                 return;
             }
 
+            Logs.error(error);
+            ReplyError.replyServerError(response);
+        }
+    }
+
+    public async getAutoUpdaterLatestNupkg(request: Request, response: Response): Promise<void> {
+        try {
+
+            const fileName = request.params.fileName;
+            const githubReleasesLatest = await this._launcherService.getGithubReleasesLatest();
+            const nupkgData = await githubReleasesLatest.assets.find((item: any) => item.name === fileName); 
+            
+            response.redirect(nupkgData.browser_download_url);
+
+        } catch (error: any) {
             Logs.error(error);
             ReplyError.replyServerError(response);
         }
