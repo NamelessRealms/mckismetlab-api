@@ -12,8 +12,8 @@ COPY src ./src
 COPY tsconfig.json ./tsconfig.json
 COPY types.d.ts ./types.d.ts
 
-# Build dist
-RUN yarn buildTsc
+# Build tsc
+RUN tsc
 
 # remove development dependencies
 RUN npm prune --production
