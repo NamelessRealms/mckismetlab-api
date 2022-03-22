@@ -13,7 +13,6 @@ COPY tsconfig.json ./tsconfig.json
 COPY types.d.ts ./types.d.ts
 
 # Build tsc
-RUN npm install typescript -g
 RUN tsc
 
 # remove development dependencies
