@@ -6,11 +6,9 @@
   "scripts": {
     "start": "cross-env NODE_ENV=production node ./dist/index.js",
     "dev": "cross-env NODE_ENV=development ts-node-dev --respawn --watch --files -- ./src/index.ts",
-    "buildTsc": "tsc",
-    "build": "yarn outputVersion && yarn buildDir && yarn buildTsc",
+    "build": "yarn outputVersion && yarn buildDir && tsc",
     "buildDir": "node build.js",
-    "outputVersion": "node -p \"'export const API_VERSION = ' + JSON.stringify(require('./package.json').version) + ';'\" > src/version.ts",
-    "buildDocker": "docker buildx build --platform linux/amd64 --output type=image,registry.insecure=true,push=true -t 220.134.105.30:56125/mckismetlab-api-server ."
+    "outputVersion": "node -p \"'export const API_VERSION = ' + JSON.stringify(require('./package.json').version) + ';'\" > src/version.ts"
   },
   "author": "Quasi",
   "license": "GPL-3.0 License",
