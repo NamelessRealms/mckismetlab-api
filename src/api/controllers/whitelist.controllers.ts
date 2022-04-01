@@ -265,11 +265,17 @@ export default class WhitelistController {
         const minecraftUUID = request.params.minecraftUUID;
         const serverWhitelistData = await this._whitelistService.getServerWhitelist(minecraftUUID);
 
-        if (serverWhitelistData !== undefined) {
-            response.status(200).json(serverWhitelistData);
-        } else {
-            response.status(204).send();
+        if (serverWhitelistData === undefined) {
+            response.status(204).end();
+            return;
         }
+
+        if(serverWhitelistData.length <= 0) {
+            response.status(204).end();
+            return;
+        }
+
+        response.status(200).json(serverWhitelistData);
     }
 
     public async getServerWhitelistServerId(request: Request, response: Response): Promise<void> {
