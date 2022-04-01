@@ -109,7 +109,7 @@ export default class WhitelistService {
 
     public async getServerWhitelist(minecraftUUID: string): Promise<any> {
         const serverWhitelistData = await Mysql.getPool().query("SELECT * FROM server_whitelist WHERE minecraft_uuid = ?", [minecraftUUID]);
-        return (serverWhitelistData[0] as Array<any>)[0];
+        return (serverWhitelistData[0] as Array<any>);
     }
 
     public async getServerWhitelistServerId(minecraftUUID: string, serverId: string): Promise<any> {
