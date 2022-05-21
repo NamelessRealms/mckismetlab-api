@@ -83,7 +83,7 @@ export default class App {
 
     private _settings(): void {
         this._app.set("views", path.join(__dirname, "views"));
-        this._app.set("view engine", "ejs");
+        // this._app.set("view engine", "ejs");
         this._app.enable("trust proxy");
         // this._app.set("trust proxy", "127.0.0.1");
     }
@@ -92,7 +92,7 @@ export default class App {
         this._app.use(helmet());
         this._app.use(morgan(process.env.NODE_ENV === "development" ? "dev" : this._morganFormat));
         this._app.use(express.json({ limit: "10MB" }));
-        this._app.use(express.static(path.join(__dirname, "public")));
+        // this._app.use(express.static(path.join(__dirname, "public")));
         this._app.use(express.urlencoded({ extended: true }));
         this._app.use(cookieParser());
         // this._app.use(session(this._sessionOptions));
