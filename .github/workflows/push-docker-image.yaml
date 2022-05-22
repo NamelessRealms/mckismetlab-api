@@ -7,6 +7,10 @@ on:
 jobs:
   push-image-to-docker-hub:
     runs-on: ubuntu-latest
+  
+    env:
+      DOCKER_BUILDKIT: 0
+      COMPOSE_DOCKER_CLI_BUILD: 0
 
 #     env:
 #       DOCKER_PULL_COMMAND: docker buildx build --platform linux/amd64 --output type=image,push=true -t ${{ secrets.DOCKER_STORAGE_IP }}/mckismetlab-api-server .
