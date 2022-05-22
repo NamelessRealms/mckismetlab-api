@@ -44,12 +44,18 @@ jobs:
 #       if: steps.firs-docker-pull.outcome != 'success'
 #       run: ${{ env.DOCKER_PULL_COMMAND }}
 
-    - name: Build and push
-      uses: docker/build-push-action@v3
-      with:
-        context: .
-        push: true
-        tags: ${{ secrets.DOCKER_STORAGE_IP }}/mckismetlab-api-server-test
+#     - name: Build and push
+#       uses: docker/build-push-action@v3
+#       with:
+#         context: .
+#         push: true
+#         tags: ${{ secrets.DOCKER_STORAGE_IP }}/mckismetlab-api-server-test
+
+    - name: Build the Docker
+      run: docker build . --file Dockerfile --tag ${{ secrets.DOCKER_STORAGE_IP }}/mckismetlab-api-server
+
+    - name: Docker Push
+      run: docker push ${{ secrets.DOCKER_STORAGE_IP }}/mckismetlab-api-server
 
     - name: Invoke deployment hook
       uses: distributhor/workflow-webhook@v2
