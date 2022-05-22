@@ -30,10 +30,6 @@ jobs:
         username: ${{ secrets.MCKISMETLAB_DOCKER_REGISTRY_USERNAME }}
         password: ${{ secrets.MCKISMETLAB_DOCKER_REGISTRY_PASSWORD }}
       
-    - name: Get current date
-      id: date
-      run: echo "::set-output name=date::$(date +'%Y-%m-%d--%M-%S')"
-      
 #     - name: Build the Docker image And Push
 #       id: firs-docker-pull
 #       run: ${{ env.DOCKER_PULL_COMMAND }}
@@ -44,18 +40,12 @@ jobs:
 #       if: steps.firs-docker-pull.outcome != 'success'
 #       run: ${{ env.DOCKER_PULL_COMMAND }}
 
-#     - name: Build and push
-#       uses: docker/build-push-action@v3
-#       with:
-#         context: .
-#         push: true
-#         tags: ${{ secrets.DOCKER_STORAGE_IP }}/mckismetlab-api-server-test
-
-    - name: Build the Docker
-      run: docker build . --file Dockerfile --tag ${{ secrets.DOCKER_STORAGE_IP }}/mckismetlab-api-server
-
-    - name: Docker Push
-      run: docker push ${{ secrets.DOCKER_STORAGE_IP }}/mckismetlab-api-server
+    - name: Build and push
+      uses: docker/build-push-action@v3
+      with:
+        context: .
+        push: true
+        tags: ${{ secrets.DOCKER_STORAGE_IP }}/mckismetlab-api-server
 
     - name: Invoke deployment hook
       uses: distributhor/workflow-webhook@v2
