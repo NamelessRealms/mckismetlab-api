@@ -1,4 +1,6 @@
 import { Request, Response } from "express";
+import * as FormData from "form-data";
+import * as fs from "fs-extra";
 
 import LauncherService from "../services/launcher/launcher.service";
 import Logs from "../utils/logs";
@@ -153,6 +155,51 @@ export default class LauncherController {
             const nupkgData = await githubReleasesLatest.assets.find((item: any) => item.name === fileName); 
             
             response.redirect(nupkgData.browser_download_url);
+
+        } catch (error: any) {
+            Logs.error(error);
+            ReplyError.replyServerError(response);
+        }
+    }
+
+    public async postDiscordWebhooks(request: Request, response: Response): Promise<void> {
+        try {
+            
+            const webhooksErrorUrl = process.env.WEBHOOKS_ERROR_URL;
+
+            if(webhooksErrorUrl === undefined) {
+                throw new Error("Env WEBHOOKS_ERROR_URL not null.");
+            }
+
+            const payloadJson = request.body.payload_json;
+            const files = request.files;
+
+            const form = new FormData();
+
+            if(files !== undefined) {
+                for(let i = 0; i < files.length; i++) {
+                    const file = (files as Array<any>)[i];
+                    form.append(`file${i + 1}`, file.buffer, { filename: file.originalname });
+                }
+            }
+
+            form.append("payload_json", payloadJson);
+
+            form.submit(webhooksErrorUrl, (error) => {
+                
+                if(error) {
+                    Logs.error(error);
+                    response.status(404).json({
+                        error: "WEBHOOKS_SEND_ERROR",
+                        error_description: "webhooks send error"
+                    });
+                    return;
+                }
+
+                response.status(200).end();
+            });
+
+            // response.status(200).end();
 
         } catch (error: any) {
             Logs.error(error);

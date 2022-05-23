@@ -8,8 +8,8 @@ jobs:
   push-image-to-docker-hub:
     runs-on: ubuntu-latest
 
-#     env:
-#       DOCKER_PULL_COMMAND: docker buildx build --platform linux/amd64 --output type=image,push=true -t ${{ secrets.DOCKER_STORAGE_IP }}/mckismetlab-api-server .
+    env:
+      IMAGE: mckismetlab-api-server
 
     steps:
     
@@ -29,26 +29,28 @@ jobs:
         registry: mckismetlab.net
         username: ${{ secrets.MCKISMETLAB_DOCKER_REGISTRY_USERNAME }}
         password: ${{ secrets.MCKISMETLAB_DOCKER_REGISTRY_PASSWORD }}
-      
-#     - name: Build the Docker image And Push
-#       id: firs-docker-pull
-#       run: ${{ env.DOCKER_PULL_COMMAND }}
-#       continue-on-error: true
 
-#     - name: Retry again on failure Build the Docker image And Push
-#       id: second-docker-pull
-#       if: steps.firs-docker-pull.outcome != 'success'
-#       run: ${{ env.DOCKER_PULL_COMMAND }}
-
-    - name: Build and push
+    - name: Build the Docker image And Push
+      id: firs-docker-pull
       uses: docker/build-push-action@v3
       with:
         context: .
         push: true
-        tags: ${{ secrets.DOCKER_STORAGE_IP }}/mckismetlab-api-server
+        tags: ${{ secrets.DOCKER_STORAGE_IP }}/${{ env.IMAGE }}
+      continue-on-error: true
+
+    - name: Retry again on failure Build the Docker image And Push
+      id: second-docker-pull
+      if: steps.firs-docker-pull.outcome != 'success'
+      uses: docker/build-push-action@v3
+      with:
+        context: .
+        push: true
+        tags: ${{ secrets.DOCKER_STORAGE_IP }}/${{ env.IMAGE }}
 
     - name: Invoke deployment hook
       uses: distributhor/workflow-webhook@v2
       env:
         webhook_url: ${{ secrets.WEBHOOK_URL }}/mkl-api-build-webhook
         webhook_secret: ${{ secrets.WEBHOOK_SECRET }}
+        webhook_auth: ${{ secrets.WEBHOOK_USERNAME }}:${{ secrets.WEBHOOK_PASSWORD }}
