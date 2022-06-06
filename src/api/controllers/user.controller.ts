@@ -81,4 +81,41 @@ export default class UserController {
             response.status(204).send();
         }
     }
+
+    public async getPanelUsers(request: Request, response: Response): Promise<void> {
+        try {
+
+            const panelUsers = await this._userService.getPanelUsers();
+
+            if (panelUsers.length !== 0) {
+                response.status(200).json(panelUsers);
+            } else {
+                response.status(204).send();
+            }
+
+        } catch (error: any) {
+            Logs.error(error);
+            ReplyError.replyServerError(response);
+        }
+    }
+
+    public async getPanelUser(request: Request, response: Response): Promise<void> {
+        try {
+
+            // github user id
+            const id = request.params.id;
+
+            const panelUser = await this._userService.getPanelUser(id);
+
+            if (panelUser !== undefined) {
+                response.status(200).json(panelUser);
+            } else {
+                response.status(204).send();
+            }
+
+        } catch (error: any) {
+            Logs.error(error);
+            ReplyError.replyServerError(response);
+        }
+    }
 }

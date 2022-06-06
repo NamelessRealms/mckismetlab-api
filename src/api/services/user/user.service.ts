@@ -59,4 +59,22 @@ export default class UserService {
             uuid: minecraftUUID
         };
     }
+
+    public async getPanelUsers(): Promise<Array<IPanelUser>> {
+        const panelUsers = await Mysql.getPool().query("SELECT * FROM dashboard_user_roles");
+        return panelUsers[0] as Array<IPanelUser>;
+    }
+
+    public async getPanelUser(id: string): Promise<IPanelUser> {
+        const panelUsers = await Mysql.getPool().query("SELECT * FROM dashboard_user_roles WHERE github_user_id = ?", [id]);        
+        return (panelUsers[0] as Array<IPanelUser>)[0];
+    }
+}
+
+interface IPanelUser {
+    id: string;
+    github_user_name: string;
+    github_user_email: string;
+    github_user_id: string;
+    roles: Array<string>;
 }
