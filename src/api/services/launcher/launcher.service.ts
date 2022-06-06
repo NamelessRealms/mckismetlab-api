@@ -28,6 +28,11 @@ export default class LauncherService {
         return { modified: true };
     }
 
+    public async updateLauncherAssetsV2(jsonData: string): Promise<ICreateSql> {
+        await Mysql.getPool().query("UPDATE launcher_assets_v2 SET assets_data = ? WHERE id = 1", [jsonData]);
+        return { modified: true };
+    }
+
     public async putLauncherPage(jsonData: string): Promise<ICreateSql> {
         await Mysql.getPool().query("UPDATE launcher_page SET data = ? WHERE data_id = 1", [jsonData]);
         return { modified: true };
