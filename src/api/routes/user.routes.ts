@@ -23,5 +23,11 @@ export default class UserRouter extends IRoutes {
 
         this._routers.route("/playerRole/:minecraftUUID")
             .get((req, res) => this._userController.getPlayerRole(req, res));
+
+        this._routers.route("/dashboard")
+            .get((req, res) => this._userController.getPanelUsers(req, res));
+
+        this._routers.route("/dashboard/:id")
+            .get((req, res) => this._userController.getPanelUser(req, res));
     }
 }

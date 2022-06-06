@@ -6,6 +6,7 @@ import * as cookieParser from "cookie-parser";
 import * as fs from "fs-extra";
 import * as http from "http";
 import * as https from "https";
+import * as cors from "cors";
 // import * as session from "express-session";
 
 // route
@@ -89,6 +90,11 @@ export default class App {
     }
 
     private _middleware(): void {
+
+        if(process.env.NODE_ENV === "development") {
+            this._app.use(cors());            
+        }
+
         this._app.use(helmet());
         this._app.use(morgan(process.env.NODE_ENV === "development" ? "dev" : this._morganFormat));
         this._app.use(express.json({ limit: "10MB" }));
