@@ -15,7 +15,8 @@ export default class LauncherV2Router extends IRoutes {
     protected _loadRoutes(): void {
 
         this._routers.route("/assets")
-            .get((req, res) => this._launcherController.getLauncherAssetsV2(req, res));
+            .get((req, res) => this._launcherController.getLauncherAssetsV2(req, res))
+            .put(this._authJwtVerify.verifyToken, (req, res) => this._launcherController.putLauncherAssetsV2(req, res));
 
         this._routers.route("/webhooks/discord")
             .post(multer().any(), (req, res) => this._launcherController.postDiscordWebhooks(req, res));

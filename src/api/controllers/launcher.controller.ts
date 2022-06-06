@@ -56,6 +56,27 @@ export default class LauncherController {
         }
     }
 
+    public async putLauncherAssetsV2(request: Request, response: Response): Promise<void> {
+        try {
+
+            const launcherAssetsBody = request.body;
+            const putLauncherAssets = await this._launcherService.updateLauncherAssetsV2(JSON.stringify(launcherAssetsBody));
+
+            if (putLauncherAssets.modified) {
+                response.status(201).json({
+                    message: "success",
+                    info: launcherAssetsBody
+                });
+            } else {
+                response.status(304).send();
+            }
+
+        } catch (error: any) {
+            Logs.error(error);
+            ReplyError.replyServerError(response);
+        }
+    }
+
     public async putLauncherPage(request: Request, response: Response): Promise<void> {
         try {
 
@@ -152,8 +173,8 @@ export default class LauncherController {
 
             const fileName = request.params.fileName;
             const githubReleasesLatest = await this._launcherService.getGithubReleasesLatest();
-            const nupkgData = await githubReleasesLatest.assets.find((item: any) => item.name === fileName); 
-            
+            const nupkgData = await githubReleasesLatest.assets.find((item: any) => item.name === fileName);
+
             response.redirect(nupkgData.browser_download_url);
 
         } catch (error: any) {
@@ -164,10 +185,10 @@ export default class LauncherController {
 
     public async postDiscordWebhooks(request: Request, response: Response): Promise<void> {
         try {
-            
+
             const webhooksErrorUrl = process.env.WEBHOOKS_ERROR_URL;
 
-            if(webhooksErrorUrl === undefined) {
+            if (webhooksErrorUrl === undefined) {
                 throw new Error("Env WEBHOOKS_ERROR_URL not null.");
             }
 
@@ -176,8 +197,8 @@ export default class LauncherController {
 
             const form = new FormData();
 
-            if(files !== undefined) {
-                for(let i = 0; i < files.length; i++) {
+            if (files !== undefined) {
+                for (let i = 0; i < files.length; i++) {
                     const file = (files as Array<any>)[i];
                     form.append(`file${i + 1}`, file.buffer, { filename: file.originalname });
                 }
@@ -186,8 +207,8 @@ export default class LauncherController {
             form.append("payload_json", payloadJson);
 
             form.submit(webhooksErrorUrl, (error) => {
-                
-                if(error) {
+
+                if (error) {
                     Logs.error(error);
                     response.status(404).json({
                         error: "WEBHOOKS_SEND_ERROR",
