@@ -7,6 +7,7 @@ import * as fs from "fs-extra";
 import * as http from "http";
 import * as https from "https";
 import * as cors from "cors";
+import * as socketIo from "socket.io";
 // import * as session from "express-session";
 
 // route
@@ -29,6 +30,9 @@ import Logs from "./api/utils/logs";
 import { environment } from "./environment/environment";
 import LauncherOldRouter from "./api/routes/launcherOld.routes";
 import InteractionsService from "./api/services/Interactions/Interactions.service";
+import SocketRouter from "./api/routes/socket.routes";
+import AuthJwtVerify from "./api/middlewares/authJwtVerify";
+import SocketIo from "./socket/SocketIo";
 
 export default class App {
 
@@ -52,6 +56,7 @@ export default class App {
 
     private _privateKey: string | null = null;
     private _certificate: string | null = null;
+    private _io: socketIo.Server | null = null;
 
     constructor() {
 
@@ -91,8 +96,8 @@ export default class App {
 
     private _middleware(): void {
 
-        if(process.env.NODE_ENV === "development") {
-            this._app.use(cors());            
+        if (process.env.NODE_ENV === "development") {
+            this._app.use(cors());
         }
 
         this._app.use(helmet());
@@ -116,6 +121,7 @@ export default class App {
         new ModsRoutes(this._app);
         new ModpacksRoutes(this._app);
         new LauncherV2Router(this._app);
+        new SocketRouter(this._app);
         // new InteractionsRouter(this._app);
 
         // old
@@ -126,26 +132,36 @@ export default class App {
 
         this._app.set("port", port || 3000);
 
-        // this._app.listen(port, () => {
-        //     Logs.info("Api Service listening on PORT " + this._app.get("port"));
+        const httpServer = http.createServer(this._app);
+
+        httpServer.listen(port, () => {
+            Logs.info("Http Api Service listening on PORT " + this._app.get("port"));
+        });
+
+        new SocketIo(httpServer).listeners();
+
+        // this._io.on("connection", (socket) => {
+        //     setInterval(() => {
+        //         socket.emit("message", "Hi Quasi.");
+        //     }, 2000);
         // });
 
-        if (this._privateKey !== null && this._certificate !== null) {
+        // if (this._privateKey !== null && this._certificate !== null) {
 
-            const httpsServer = https.createServer({ key: this._privateKey, cert: this._certificate }, this._app);
+        //     const httpsServer = https.createServer({ key: this._privateKey, cert: this._certificate }, this._app);
 
-            httpsServer.listen(port, () => {
-                Logs.info("Https Api Service listening on PORT " + this._app.get("port"));
-            });
+        //     httpsServer.listen(port, () => {
+        //         Logs.info("Https Api Service listening on PORT " + this._app.get("port"));
+        //     });
 
-        } else {
+        // } else {
 
-            const httpServer = http.createServer(this._app);
+        //     const httpServer = http.createServer(this._app);
 
-            httpServer.listen(port, () => {
-                Logs.info("Http Api Service listening on PORT " + this._app.get("port"));
-            });
+        //     httpServer.listen(port, () => {
+        //         Logs.info("Http Api Service listening on PORT " + this._app.get("port"));
+        //     });
 
-        }
+        // }
     }
 }

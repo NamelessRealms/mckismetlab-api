@@ -36,34 +36,34 @@ export default class Logs {
         }
     };
 
-    public static info(message: any) {
+    public static info(...message: any) {
 
         let title: string = "INFO";
         title = `${this._colours.fg.white}[${this._colours.fg.green}${title}${this._colours.fg.white}]${this._colours.reset}`;
         let time = date.fullYearTime();
         time = `${this._colours.fg.white}[${this._colours.fg.cyan}${date.fullYearTime()}${this._colours.fg.white}]${this._colours.reset}`;
 
-        console.log(`${time}${title}`, message);
+        console.log(`${time}${title} ${message}`);
     }
 
-    public static warn(message: any) {
+    public static warn(...message: any) {
 
         let title: string = "WARN";
         title = `${this._colours.fg.white}[${this._colours.fg.yellow}${title}${this._colours.fg.white}]${this._colours.reset}`;
         let time = date.fullYearTime();
         time = `${this._colours.fg.white}[${this._colours.fg.cyan}${date.fullYearTime()}${this._colours.fg.white}]${this._colours.reset}`;
 
-        console.log(`${time}${title}`, message);
+        console.log(`${time}${title} ${message}`);
     }
 
-    public static error(message: any) {
+    public static error(...message: any) {
 
         let title: string = "ERROR";
         title = `${this._colours.fg.white}[${this._colours.fg.red}${title}${this._colours.fg.white}]${this._colours.reset}`;
         let time = date.fullYearTime();
         time = `${this._colours.fg.white}[${this._colours.fg.cyan}${date.fullYearTime()}${this._colours.fg.white}]${this._colours.reset}`;
 
-        console.log(`${time}${title}`, message);
+        console.log(`${time}${title} ${message}`);
     }
 
     // writeLogFile(logText: string) {
