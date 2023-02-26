@@ -17,6 +17,9 @@ export default class SponsorRouter extends IRoutes {
             .get((req, res) => this._sponsorController.getAllSponsorUser(req, res))
             .post(this._authJwtVerify.verifyToken, (req, res) => this._sponsorController.createSponsorUser(req, res));
 
+        // this._routers.route("/users")
+        //     .post(this._authJwtVerify.verifyToken, (req, res) => this._sponsorController.getAllSponsorUser(req, res));
+
         this._routers.route("/user/:uuid")
             .get((req, res) => this._sponsorController.getSponsorUser(req, res))
             .patch(this._authJwtVerify.verifyToken, (req, res) => this._sponsorController.patchSponsorUser(req, res))

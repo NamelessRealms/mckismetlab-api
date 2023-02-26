@@ -102,7 +102,7 @@ export default class UserController {
     public async getPanelUser(request: Request, response: Response): Promise<void> {
         try {
 
-            // github user id
+            // github user id or discord user id
             const id = request.params.id;
 
             const panelUser = await this._userService.getPanelUser(id);

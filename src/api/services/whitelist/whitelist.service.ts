@@ -80,8 +80,17 @@ export default class WhitelistService {
         await Mysql.getPool().query("DELETE FROM manualVerify_whitelist WHERE channel_id = ? AND message_id = ?", [channelId, messageId]);
     }
 
-    public async getAllServerWhitelist(): Promise<Array<any>> {
-        const allServerWhitelistData = await Mysql.getPool().query("SELECT * FROM server_whitelist");
+    public async getAllServerWhitelist(serverId?: string): Promise<Array<any>> {
+
+        let allServerWhitelistData;
+
+        if (serverId !== undefined) {
+            allServerWhitelistData = await Mysql.getPool().query("SELECT * FROM server_whitelist WHERE server_id = ?", [serverId]);
+            
+        } else {
+            allServerWhitelistData = await Mysql.getPool().query("SELECT * FROM server_whitelist");
+        }
+
         return (allServerWhitelistData[0] as Array<any>);
     }
 

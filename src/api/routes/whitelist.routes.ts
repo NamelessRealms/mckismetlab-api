@@ -35,6 +35,9 @@ export default class WhitelistRoutes extends IRoutes {
             .get((req, res) => this._whitelistController.getAllServerWhitelist(req, res))
             .post(this._authJwtVerify.verifyToken, (req, res) => this._whitelistController.createServerWhitelist(req, res));
 
+        this._routers.route("/serverWhitelist/:serverId")
+            .get((req, res) => this._whitelistController.getAllServerWhitelist(req, res));
+
         this._routers.route("/serverWhitelist/:minecraftUUID")
             .get((req, res) => this._whitelistController.getServerWhitelist(req, res))
             .delete(this._authJwtVerify.verifyToken, (req, res) => this._whitelistController.deleteServerWhitelist(req, res));

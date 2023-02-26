@@ -205,7 +205,8 @@ export default class WhitelistController {
 
     public async getAllServerWhitelist(request: Request, response: Response): Promise<void> {
 
-        const allServerWhitelistData = await this._whitelistService.getAllServerWhitelist();
+        const serverId = request.params.serverId;
+        const allServerWhitelistData = await this._whitelistService.getAllServerWhitelist(serverId);
 
         if (allServerWhitelistData.length !== 0) {
             response.status(200).json(allServerWhitelistData);
