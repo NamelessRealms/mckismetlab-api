@@ -41,7 +41,7 @@ jobs:
         context: .
         push: true
         tags: |
-          ${{ secrets.DOCKER_STORAGE_IP }}/${{ env.IMAGE }}:latest
+          ${{ secrets.DOCKER_STORAGE_IP }}/${{ env.IMAGE }}
           ${{ secrets.DOCKER_STORAGE_IP }}/${{ env.IMAGE }}:${{ steps.package-version.outputs.current-version}}
       continue-on-error: true
 
@@ -53,7 +53,7 @@ jobs:
         context: .
         push: true
         tags: |
-          ${{ secrets.DOCKER_STORAGE_IP }}/${{ env.IMAGE }}:latest
+          ${{ secrets.DOCKER_STORAGE_IP }}/${{ env.IMAGE }}
           ${{ secrets.DOCKER_STORAGE_IP }}/${{ env.IMAGE }}:${{ steps.package-version.outputs.current-version}}
 
 #    - name: Invoke deployment hook
